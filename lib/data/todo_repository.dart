@@ -15,13 +15,7 @@ class TodoRepository implements Repo {
     final SharedPreferences db = await SharedPreferences.getInstance();
 
     List<String>? itemsJson = db.getStringList('items');
-    if (itemsJson != null) {
-      items = itemsJson
-          .map((item) => ToDoModel.fromJson(json.decode(item)))
-          .toList();
-    } else {
-      items = [];
-    }
+    items = itemsJson!.map((item) => ToDoModel.fromJson(json.decode(item))).toList();
 
     return items;
   }
