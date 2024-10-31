@@ -9,22 +9,36 @@ abstract class Repo {
 }
 
 class TodoRepository implements Repo {
+  @override
   Future<List<ToDoModel>> getItems() async {
     final List<ToDoModel> items;
 
     final SharedPreferences db = await SharedPreferences.getInstance();
 
-    List<String>? itemsJson = db.getStringList('items');
-    items = itemsJson!.map((item) => ToDoModel.fromJson(json.decode(item))).toList();
+    List<String> itemsJson = db.getStringList('items') ?? [];
+
+    items = itemsJson
+        .map(
+          (item) => ToDoModel.fromJson(json.decode(item)),
+        )
+        .toList();
 
     return items;
   }
 
+  @override
   Future<void> saveItems(List<ToDoModel> items) async {
     final SharedPreferences db = await SharedPreferences.getInstance();
 
-    List<String> readyToSave =
-        items.map((item) => jsonEncode(item.toJson())).toList();
+    List<String> readyToSave = items
+        .map(
+          (item) => jsonEncode(item.toJson()),
+        )
+        .toList();
     db.setStringList('items', readyToSave);
   }
 }
+
+// class ExtendedToDo extends TodoRepository{
+
+// }

@@ -16,5 +16,5 @@ class ToDoListView extends ToDoState {
   const ToDoListView(this.items);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [items];
 }

@@ -5,10 +5,10 @@ class ToDoModel extends Equatable {
   final String description;
   final bool isDone;
 
-  ToDoModel({
+  const ToDoModel({
     required this.title,
     required this.description,
-    this.isDone = false,
+    required this.isDone,
   });
 
   @override

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: BlocProvider(
         create: (context) => ToDoBloc(TodoRepository()),
-        child: Todolist(),
+        child: const Todolist(),
       ),
     );
   }

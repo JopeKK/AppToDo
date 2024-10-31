@@ -20,7 +20,25 @@ class AddToDo extends ToDoEvent {
 }
 
 class DoneToDo extends ToDoEvent {
-  const DoneToDo();
+  final String title;
+
+  const DoneToDo(this.title);
+
+  @override
+  List<Object> get props => [title];
+}
+
+class RemoveToDo extends ToDoEvent {
+  final String title;
+
+  const RemoveToDo(this.title);
+
+  @override
+  List<Object> get props => [title];
+}
+
+class RemoveAll extends ToDoEvent {
+  const RemoveAll();
 
   @override
   List<Object> get props => [];
