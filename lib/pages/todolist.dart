@@ -26,7 +26,7 @@ class Todolist extends StatelessWidget {
           //no tutaj czy mamy 1 stan czy jak to powinno byc trzeb sie zastanowic
           builder: (context, state) {
             if (state is ToDoInitial) {
-              return buildInitail();
+              return StartScreen();
             } else if (state is ToDoListView) {
               //no i jakos dodac to menu ma gorze tu;
               return toDolistReady(context, state.items);
@@ -41,6 +41,12 @@ class Todolist extends StatelessWidget {
   Widget buildInitail() {
     return const Center(
       child: BuildInitail(),
+    );
+  }
+
+  Widget buildStartScreen() {
+    return const Center(
+      child: StartScreen(),
     );
   }
 
@@ -119,6 +125,78 @@ class Todolist extends StatelessWidget {
   }
 }
 
+class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            const Center(
+              child: Text(
+                'Czy chcesz zacząć nowa listę czy kontynuować starą?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 30,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+              onPressed: () => removeAll(context, 0),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlueAccent),
+              child: const Text(
+                'Zacznij nową',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () => continueOldOne(context, 0),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlueAccent),
+              child: const Text(
+                'Kontynuj starą',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  void removeAll(BuildContext context, value) {
+    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
+    toDoBloc.add(const RemoveAll());
+  }
+
+  void continueOldOne(BuildContext context, value) {
+    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
+    toDoBloc.add(const ContinueOldOne());
+  }
+}
+
+// Container(
+//             margin: const EdgeInsets.only(top: 5, left: 30, right: 30),
+//             decoration: BoxDecoration(boxShadow: [
+//               BoxShadow(
+//                 color: Colors.black.withOpacity(0.11),
+//                 blurRadius: 40,
+//                 spreadRadius: 0.0,
+//               )
+//             ]),
+//           ),
+
 class BuildInitail extends StatelessWidget {
   const BuildInitail({super.key});
 
@@ -140,7 +218,6 @@ class BuildInitail extends StatelessWidget {
               )
             ]),
             child: toDoTextInput(context),
-            //dodac przycisk ze przejdz do listy tu chodzi o te 2 stany
           ),
         ]));
   }

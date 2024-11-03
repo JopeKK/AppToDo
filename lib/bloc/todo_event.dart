@@ -43,3 +43,10 @@ class RemoveAll extends ToDoEvent {
   @override
   List<Object> get props => [];
 }
+
+class ContinueOldOne extends ToDoEvent {
+  const ContinueOldOne();
+
+  @override
+  List<Object> get props => [];
+}

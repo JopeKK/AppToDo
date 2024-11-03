@@ -14,6 +14,7 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
     on<DoneToDo>(processDoneToDo);
     on<RemoveToDo>(processRemoveToDo);
     on<RemoveAll>(processRemoveAll);
+    on<ContinueOldOne>(processContinueOldOne);
   }
 
   Future<void> processAddToDo(AddToDo event, Emitter emit) async {
@@ -66,6 +67,12 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
     items.clear();
 
     await repo.saveItems(items);
+    emit(ToDoListView(items));
+  }
+
+  Future<void> processContinueOldOne(ContinueOldOne event, Emitter emit) async {
+    final List<ToDoModel> items = await repo.getItems();
+
     emit(ToDoListView(items));
   }
   // @override
