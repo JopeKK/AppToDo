@@ -34,6 +34,7 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
     for (var i = 0; i < items.length; i++) {
       if (items[i].title == event.title) {
         //no bo on jest final i co tu zrobic
+        //copy with
         items[i] = ToDoModel(
             title: items[i].title,
             description: items[i].description,

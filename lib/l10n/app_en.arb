@@ -1,0 +1,17 @@
+{
+  "@@locale": "en",
+  "cleanRoom": "Clean room",
+  "@cleanRoom": {},
+  "continueOld": "Continue old",
+  "@continueOld": {},
+  "problem": "Problem",
+  "@problem": {},
+  "removeAll": "Remove all",
+  "@removeAll": {},
+  "startNew": "Start new",
+  "@startNew": {},
+  "startNewOrOld": "Do you want to start a new list or continue the old one?",
+  "@startNewOrOld": {},
+  "toDoApp": "To Do App",
+  "@toDoApp": {}
+}

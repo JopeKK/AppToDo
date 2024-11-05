@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/bloc/todo_bloc.dart';
 import 'package:to_do_app/data/model/todo.dart';
+import 'package:to_do_app/pages/widgets/elevatedButton.dart';
+import 'package:to_do_app/pages/widgets/text.dart';
+import 'package:to_do_app/pages/widgets/textField.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Todolist extends StatelessWidget {
   const Todolist({super.key});
@@ -10,9 +14,9 @@ class Todolist extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'To Do App',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.toDoApp,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 30,
           ),
@@ -23,24 +27,16 @@ class Todolist extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
         child: BlocBuilder<ToDoBloc, ToDoState>(
-          //no tutaj czy mamy 1 stan czy jak to powinno byc trzeb sie zastanowic
           builder: (context, state) {
             if (state is ToDoInitial) {
-              return StartScreen();
+              return const StartScreen();
             } else if (state is ToDoListView) {
-              //no i jakos dodac to menu ma gorze tu;
-              return toDolistReady(context, state.items);
+              return buildListScreen(context, state.items);
             }
-            return const Text('Problem');
+            return Text(AppLocalizations.of(context)!.problem);
           },
         ),
       ),
-    );
-  }
-
-  Widget buildInitail() {
-    return const Center(
-      child: BuildInitail(),
     );
   }
 
@@ -50,10 +46,95 @@ class Todolist extends StatelessWidget {
     );
   }
 
-  Column toDolistReady(BuildContext context, List<ToDoModel> items) {
+  Widget buildListScreen(BuildContext context, List<ToDoModel> items) {
+    return Center(
+      child: ListScreen(items: items),
+    );
+  }
+}
+
+class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: MyText(
+                mytext: AppLocalizations.of(context)!.startNewOrOld,
+                size: 30,
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            MyElevatedButton(
+              myText: AppLocalizations.of(context)!.startNew,
+              myColor: Colors.lightBlueAccent,
+              onPressed: () => removeAll(context, 0),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            MyElevatedButton(
+              myText: AppLocalizations.of(context)!.continueOld,
+              myColor: Colors.lightBlueAccent,
+              onPressed: () => continueOldOne(context, 0),
+            ),
+          ],
+        ));
+  }
+
+  void removeAll(BuildContext context, value) {
+    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
+    toDoBloc.add(const RemoveAll());
+  }
+
+  void continueOldOne(BuildContext context, value) {
+    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
+    toDoBloc.add(const ContinueOldOne());
+  }
+}
+
+class ListScreen extends StatelessWidget {
+  final List<ToDoModel> items;
+
+  const ListScreen({
+    super.key,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        const BuildInitail(),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(children: [
+              const SizedBox(
+                height: 30,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 5, left: 30, right: 30),
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.11),
+                    blurRadius: 40,
+                    spreadRadius: 0.0,
+                  )
+                ]),
+                child: MyTextField(
+                    myHintText: AppLocalizations.of(context)!.cleanRoom,
+                    suffixIcon: const Icon(Icons.add),
+                    onSubmitted: (value) => submitToDo(context, value)),
+              ),
+            ])),
         const SizedBox(
           height: 30,
         ),
@@ -99,7 +180,6 @@ class Todolist extends StatelessWidget {
                       const SizedBox(
                         width: 20,
                       ),
-                      //Text(item.description),
                     ],
                   ),
                 ),
@@ -107,148 +187,32 @@ class Todolist extends StatelessWidget {
             },
           ),
         ),
-        ElevatedButton(
+        MyElevatedButton(
+          myText: AppLocalizations.of(context)!.removeAll,
+          myColor: Colors.red,
           onPressed: () => removeAll(context, 0),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          child: const Text(
-            'Usun wszystko',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
         ),
       ],
     );
   }
 
-  void removeAll(BuildContext context, value) {
+  void submitToDo(BuildContext context, String value) {
     final toDoBloc = BlocProvider.of<ToDoBloc>(context);
-    toDoBloc.add(const RemoveAll());
+    toDoBloc.add(AddToDo(value, 'test'));
   }
-}
 
-class StartScreen extends StatelessWidget {
-  const StartScreen({super.key});
+  void changeDone(BuildContext context, value) {
+    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
+    toDoBloc.add(DoneToDo(value));
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 30,
-            ),
-            const Center(
-              child: Text(
-                'Czy chcesz zacząć nowa listę czy kontynuować starą?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w300,
-                  fontSize: 30,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-              onPressed: () => removeAll(context, 0),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlueAccent),
-              child: const Text(
-                'Zacznij nową',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () => continueOldOne(context, 0),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlueAccent),
-              child: const Text(
-                'Kontynuj starą',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-          ],
-        ));
+  void removeToDo(BuildContext context, value) {
+    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
+    toDoBloc.add(RemoveToDo(value));
   }
 
   void removeAll(BuildContext context, value) {
     final toDoBloc = BlocProvider.of<ToDoBloc>(context);
     toDoBloc.add(const RemoveAll());
   }
-
-  void continueOldOne(BuildContext context, value) {
-    final toDoBloc = BlocProvider.of<ToDoBloc>(context);
-    toDoBloc.add(const ContinueOldOne());
-  }
-}
-
-// Container(
-//             margin: const EdgeInsets.only(top: 5, left: 30, right: 30),
-//             decoration: BoxDecoration(boxShadow: [
-//               BoxShadow(
-//                 color: Colors.black.withOpacity(0.11),
-//                 blurRadius: 40,
-//                 spreadRadius: 0.0,
-//               )
-//             ]),
-//           ),
-
-class BuildInitail extends StatelessWidget {
-  const BuildInitail({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 5, left: 30, right: 30),
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.11),
-                blurRadius: 40,
-                spreadRadius: 0.0,
-              )
-            ]),
-            child: toDoTextInput(context),
-          ),
-        ]));
-  }
-
-  TextField toDoTextInput(BuildContext context) {
-    return TextField(
-      onSubmitted: (value) => submitToDo(context, value),
-      decoration: InputDecoration(
-        hintText: 'Clean room',
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none),
-        suffixIcon: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-void submitToDo(BuildContext context, String value) {
-  final toDoBloc = BlocProvider.of<ToDoBloc>(context);
-  toDoBloc.add(AddToDo(value, 'test'));
-}
-
-void changeDone(BuildContext context, value) {
-  final toDoBloc = BlocProvider.of<ToDoBloc>(context);
-  toDoBloc.add(DoneToDo(value));
-}
-
-void removeToDo(BuildContext context, value) {
-  final toDoBloc = BlocProvider.of<ToDoBloc>(context);
-  toDoBloc.add(RemoveToDo(value));
 }
