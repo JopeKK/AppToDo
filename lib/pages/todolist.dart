@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/bloc/todo_bloc.dart';
 import 'package:to_do_app/data/model/todo.dart';
-import 'package:to_do_app/pages/widgets/elevatedButton.dart';
+import 'package:to_do_app/pages/widgets/elevated_Button.dart';
 import 'package:to_do_app/pages/widgets/text.dart';
-import 'package:to_do_app/pages/widgets/textField.dart';
+import 'package:to_do_app/pages/widgets/text_Field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Todolist extends StatelessWidget {
@@ -31,24 +31,12 @@ class Todolist extends StatelessWidget {
             if (state is ToDoInitial) {
               return const StartScreen();
             } else if (state is ToDoListView) {
-              return buildListScreen(context, state.items);
+              return ListScreen(items: state.items);
             }
             return Text(AppLocalizations.of(context)!.problem);
           },
         ),
       ),
-    );
-  }
-
-  Widget buildStartScreen() {
-    return const Center(
-      child: StartScreen(),
-    );
-  }
-
-  Widget buildListScreen(BuildContext context, List<ToDoModel> items) {
-    return Center(
-      child: ListScreen(items: items),
     );
   }
 }
@@ -62,26 +50,20 @@ class StartScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             Center(
               child: MyText(
                 mytext: AppLocalizations.of(context)!.startNewOrOld,
                 size: 30,
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             MyElevatedButton(
               myText: AppLocalizations.of(context)!.startNew,
               myColor: Colors.lightBlueAccent,
               onPressed: () => removeAll(context, 0),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             MyElevatedButton(
               myText: AppLocalizations.of(context)!.continueOld,
               myColor: Colors.lightBlueAccent,
@@ -115,29 +97,31 @@ class ListScreen extends StatelessWidget {
     return Column(
       children: [
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(children: [
-              const SizedBox(
-                height: 30,
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              const SizedBox(height: 30),
               Container(
                 margin: const EdgeInsets.only(top: 5, left: 30, right: 30),
-                decoration: BoxDecoration(boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.11),
-                    blurRadius: 40,
-                    spreadRadius: 0.0,
-                  )
-                ]),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.11),
+                      blurRadius: 40,
+                      spreadRadius: 0.0,
+                    )
+                  ],
+                ),
                 child: MyTextField(
-                    myHintText: AppLocalizations.of(context)!.cleanRoom,
-                    suffixIcon: const Icon(Icons.add),
-                    onSubmitted: (value) => submitToDo(context, value)),
+                  myHintText: AppLocalizations.of(context)!.cleanRoom,
+                  suffixIcon: const Icon(Icons.add),
+                  onSubmitted: (value) => submitToDo(context, value),
+                ),
               ),
-            ])),
-        const SizedBox(
-          height: 30,
+            ],
+          ),
         ),
+        const SizedBox(height: 30),
         Expanded(
           child: ListView.builder(
             itemCount: items.length,
@@ -153,26 +137,29 @@ class ListScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent,
-                      borderRadius: BorderRadius.circular(5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.11),
-                          blurRadius: 80,
-                          spreadRadius: 0.0,
-                        )
-                      ]),
+                    color: Colors.lightBlueAccent,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.11),
+                        blurRadius: 80,
+                        spreadRadius: 0.0,
+                      )
+                    ],
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       IconButton(
-                          onPressed: () => changeDone(context, item.title),
-                          icon: item.isDone
-                              ? const Icon(Icons.check_box)
-                              : const Icon(Icons.check_box_outline_blank)),
+                        onPressed: () => changeDone(context, item.title),
+                        icon: item.isDone
+                            ? const Icon(Icons.check_box)
+                            : const Icon(Icons.check_box_outline_blank),
+                      ),
                       IconButton(
-                          onPressed: () => removeToDo(context, item.title),
-                          icon: const Icon(Icons.delete_forever)),
+                        onPressed: () => removeToDo(context, item.title),
+                        icon: const Icon(Icons.delete_forever),
+                      ),
                       const SizedBox(
                         width: 20,
                       ),

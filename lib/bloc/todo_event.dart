@@ -1,10 +1,5 @@
 part of 'todo_bloc.dart';
 
-/*
-- zmiana stanu
-- dodanie zadania
-*/
-
 abstract class ToDoEvent extends Equatable {
   const ToDoEvent();
 }

@@ -38,7 +38,3 @@ class TodoRepository implements Repo {
     db.setStringList('items', readyToSave);
   }
 }
-
-// class ExtendedToDo extends TodoRepository{
-
-// }

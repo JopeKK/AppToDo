@@ -30,7 +30,7 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
 
   Future<void> processDoneToDo(DoneToDo event, Emitter emit) async {
     final List<ToDoModel> items = await repo.getItems();
-
+    
     for (var i = 0; i < items.length; i++) {
       if (items[i].title == event.title) {
         //no bo on jest final i co tu zrobic
@@ -76,21 +76,4 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
 
     emit(ToDoListView(items));
   }
-  // @override
-  // Stream<ToDoState> mapEventToState(
-  //   ToDoEvent event,
-  // ) async* {
-  //   if (event is AddToDo) {
-  //     final List<ToDoModel> items = await repo.getItems();
-  //     items.add(ToDoModel(
-  //       title: event.title,
-  //       description: event.description,
-  //     ));
-  //     await repo.saveItems(items);
-  //     yield ToDoListView(items);
-  //   } else if (event is DoneToDo) {
-  //     final List<ToDoModel> items = await repo.getItems();
-  //     yield ToDoListView(items);
-  //   }
-  // }
 }
