@@ -1,6 +1,7 @@
 # to_do_app
 
 A new Flutter project.
+Awaiting code clean up.
 
 ## Getting Started
 
